@@ -1,7 +1,7 @@
 import streamlit as st
 from openai import OpenAI
 import anthropic
-import google.generativeai as genai
+from google import genai
 
 st.set_page_config(page_title="Peach Powered AI", page_icon="🍑", layout="wide")
 st.title("Peach Powered AI 🍑")
@@ -105,12 +105,16 @@ else:
                 claude_ans = f"[Claude Error: {e}]"
 
             try:
-                genai.configure(api_key=google_key)
-                model_gemini = genai.GenerativeModel("gemini-1.5-pro")
-                r_gemini = model_gemini.generate_content(user_prompt)
+                from google import genai as g_new
+                client_gemini = g_new.Client(api_key=google_key)
+                r_gemini = client_gemini.models.generate_content(
+                    model="gemini-2.5-pro",
+                    contents=user_prompt,
+                )
                 gemini_ans = r_gemini.text
             except Exception as e:
                 gemini_ans = f"[Gemini Error: {e}]"
+
 
 
         with st.spinner("Synthesizing the ultimate answer..."):
